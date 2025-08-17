@@ -126,9 +126,9 @@ Choose an option:
 3 - Personalizado
 """)
     if op == 2:
-        player = pc_roll(import_pcs('araçatuba_players.CSV'))
+        player = pc_roll(import_pcs('Combat\\araçatuba_players.CSV'))
     elif op == 1:
-        player = pc_roll(import_pcs('são_paulo_players'))
+        player = pc_roll(import_pcs('Combat\são_paulo_players'))
     elif op == 3:
         player = pc_roll(pc_list())
     op = get_integer("""
@@ -139,7 +139,7 @@ Choose an option:
     if op == 1:
         npc = npc_list()
     elif op == 2:
-        npc = import_npc("npcs.CSV")
+        npc = import_npc("Combat\\npcs.CSV")
     show_initiatives(npc)
     creature_list = organize_by_initiative(npc, player)
     n = 0
