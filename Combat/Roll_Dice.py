@@ -1,5 +1,5 @@
 from random import randint as rnt
-
+import numpy as np
 def code_roll(script: str)->int:
     '''
     :param script: deve ter o formato adbpc onde a é o número de dados, b é o tipo de dado e c é o modificador
@@ -26,16 +26,12 @@ def code_roll(script: str)->int:
                 p = True
                 d = False
 
-    if a == '':
-        a = 1
-    if b == '':
-        b = 1
-    if c == '':
-        c = 0
-    a = int(a)
-    b = int(b)
-    c = int(c)
+    a = (1 if a == '' else int(a))
+    b = (1 if b == '' else int(b))
+    c = (0 if c == '' else int(c))
     for i in range(a):
         c += rnt(1,b)
 
     return c
+
+print(code_roll('129'))
