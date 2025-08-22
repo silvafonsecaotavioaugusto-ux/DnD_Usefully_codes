@@ -21,7 +21,7 @@ def import_npc(path: str):
     initiative_modifiers = df['initiative_modifier'].tolist()
     npc_s = []
     for i in range(len(names)):
-        npc_s.append(Npc(names[i], pv_dices[i], initiative_modifiers[i]))
+        npc_s.append(Npc(names[i], str(pv_dices[i]), initiative_modifiers[i]))
     return npc_s
 
 #Manualy create PCs
@@ -54,6 +54,8 @@ def life_edit(creature_list:list, target: str):
     for item in creature_list:
         if item.name == target:
             item.take_damage()
+            if not item.alive:
+                creature_list.remove(item)
     return creature_list
 
 #organise by initiative
@@ -79,17 +81,14 @@ def organize_by_initiative(npc_list_1: list, pc_list_1: list):
 
 #define one turn of a specific creature
 def turn(creature, creature_list: list):
+                
+    print(f"{creature.name}'s turn!")
     if creature.is_npc: #NPC's turn
-        if creature.alive :
-            print(f"{creature.name}'s turn.")
-            print(f"Actual HP:{creature.pv}.")
-            input('Press any key to go next:')  # Make you control when go to next turn.
-    else:  #player's turn
-        print(f"{creature.name}'s turn!")
-        n_targets = get_integer(f"Number os targets:")
-        for i in range(n_targets):
-            target = str(input("Which creature would you like to target?")).strip()
-            creature_list = life_edit(creature_list, target)
+        print(f"Actual HP:{creature.pv}.")
+    n_targets = get_integer(f"Number os targets:")
+    for i in range(n_targets):
+        target = str(input("Which creature would you like to target?")).strip()
+        creature_list = life_edit(creature_list, target)
     return creature_list
 
 #define 6 seconds of combat

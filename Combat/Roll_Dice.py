@@ -33,5 +33,3 @@ def code_roll(script: str)->int:
         c += rnt(1,b)
 
     return c
-
-print(code_roll('129'))
