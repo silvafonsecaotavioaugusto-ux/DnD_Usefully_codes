@@ -9,7 +9,7 @@ class Npc:
         self.pv = Rd.code_roll(self.pv_dices)
         self.alive = True
         self.ini_modifier = ini_modifier
-        self.initiative = Rd.code_roll(f'1d20p{ini_modifier}')
+        self.initiative = self.roll_initiative()
 
     def take_damage(self):
         damage = get_integer('How many damage?')
@@ -17,7 +17,14 @@ class Npc:
         if self.pv < 0:
             print(f'{self.name} is dead!')
             self.alive = False
-
+    
+    def roll_initiative(self):
+        initiative = (Rd.code_roll(f'1d20'))
+        if initiative == 20:
+            return 0
+        elif initiative == 1:
+            return 1
+        return initiative + self.ini_modifier
 
 #Player creation
 class Pc:

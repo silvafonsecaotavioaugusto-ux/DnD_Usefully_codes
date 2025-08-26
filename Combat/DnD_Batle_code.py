@@ -63,7 +63,7 @@ def organize_by_initiative(npc_list_1: list, pc_list_1: list):
     initiative_list = []
     initiative_numbers = []
     print_line()
-    print('Organizing by initiative. 0 means Critical Success')
+    print('Organizing by initiative...')
     #cria uma lista de listas que representa todas as iniciativas possíveis
     for i in range(40):
         initiative_numbers.append([])
@@ -85,9 +85,10 @@ def turn(creature, creature_list: list):
     print(f"{creature.name}'s turn!")
     if creature.is_npc: #NPC's turn
         print(f"Actual HP:{creature.pv}.")
-    n_targets = get_integer(f"Number os targets:")
+    n_targets = get_integer(f"Number of targets: ")
     for i in range(n_targets):
-        target = str(input("Which creature would you like to target?")).strip()
+        target = str(input("Which creature would you like to target? " \
+        "")).strip()
         creature_list = life_edit(creature_list, target)
     return creature_list
 
@@ -116,6 +117,7 @@ def main():
     print("'end' to finish the combat")
     print("'add player' to add player")
     print("'add npc' to add npc")
+    print("In initiative fase, 0 means a critical success and 1 means a critical fail")
     player = []
     npc = []
     op = get_integer("""
@@ -127,7 +129,7 @@ Choose an option:
     if op == 2:
         player = pc_roll(import_pcs('Combat\\araçatuba_players.CSV'))
     elif op == 1:
-        player = pc_roll(import_pcs('Combat\são_paulo_players'))
+        player = pc_roll(import_pcs('Combat\\são_paulo_players.CSV'))
     elif op == 3:
         player = pc_roll(pc_list())
     op = get_integer("""
@@ -135,6 +137,7 @@ Choose an option:
 1 - Encontro Personalizado
 2 - Encontro Preparado
 """)
+    
     if op == 1:
         npc = npc_list()
     elif op == 2:
@@ -145,14 +148,23 @@ Choose an option:
     while True:
         n += 1
         creature_list = combat(creature_list, n)
-        op = input("Press any key to go next turn:")
+        op = input("Press any key to go next turn: ")
         if op == "show":
             show_creatures(creature_list)
-            op = input("Press any key to go next turn:")
+            op = input("Press any key to go next turn: ")
         if op == "end":
             break
         if op == "add npc":
-            new_npc = npc_list()
+            o = get_integer("""
+Choose an option:
+1 - Encontro Personalizado
+2 - Encontro Preparado
+""")
+            if o == 1:
+                new_npc = npc_list()
+            elif o ==  2:
+                new_npc = import_npc('Combat\\npcs1.CSV')
+            show_initiatives(new_npc)
             creature_list = organize_by_initiative(creature_list, new_npc)
         if op == "add player":
             new_players = pc_roll(pc_list())
