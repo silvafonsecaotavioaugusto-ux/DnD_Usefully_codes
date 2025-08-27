@@ -64,6 +64,7 @@ def organize_by_initiative(npc_list_1: list, pc_list_1: list):
     initiative_numbers = []
     print_line()
     print('Organizing by initiative...')
+    print_line()
     #cria uma lista de listas que representa todas as iniciativas possíveis
     for i in range(40):
         initiative_numbers.append([])
@@ -110,8 +111,12 @@ def show_creatures(creature_list: list):
 
 #show npc's initiatives
 def show_initiatives(npcs: list):
+    print_line()
+    str1, str2 = 'Name', 'Initiative'
+
+    print(f'{str1:^15}:{str2:^15}')
     for npc in npcs:
-        print(f"{npc.name}:{npc.initiative}")
+        print(f"{npc.name:^15}:{npc.initiative:^15}")
 
 def main():
     print("'end' to finish the combat")
