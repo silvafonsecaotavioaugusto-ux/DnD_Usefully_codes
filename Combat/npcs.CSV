@@ -1,2 +1,5 @@
-name,pv_dice,initiative_modifier,
-dem sens, 20d12p21,2,
+name,pv_dice,initiative_modifier,duble_turn,
+dem sens, 226,2,True,
+bart kum,105,2,False,
+sacerdote,45,0,False,
+veterano,90,1,False,

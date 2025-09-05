@@ -19,9 +19,10 @@ def import_npc(path: str):
     names = df['name'].tolist()
     pv_dices = df['pv_dice'].tolist()
     initiative_modifiers = df['initiative_modifier'].tolist()
+    duble_turn = df['duble_turn'].tolist()
     npc_s = []
     for i in range(len(names)):
-        npc_s.append(Npc(names[i], str(pv_dices[i]), initiative_modifiers[i]))
+        npc_s.append(Npc(names[i], str(pv_dices[i]), initiative_modifiers[i], duble_turn[i]))
     return npc_s
 
 #Manualy create PCs
@@ -50,12 +51,13 @@ def pc_roll(pcs):
     return pcs
 
 #NPCs must take damage!
-def life_edit(creature_list:list, target: str):
+def life_edit(creature_list:list, target: str, damage: int):
     for item in creature_list:
         if item.name == target:
-            item.take_damage()
-            if not item.alive:
-                creature_list.remove(item)
+            item.take_damage(damage)
+    for idx in range(len(creature_list)-1, -1, -1):
+        if not creature_list[idx].alive:
+            creature_list.pop(idx)
     return creature_list
 
 #organise by initiative
@@ -73,8 +75,10 @@ def organize_by_initiative(npc_list_1: list, pc_list_1: list):
     for pc in pc_list_1:
         initiative_numbers[pc.initiative-1].append(pc)
     #designa cada npc à sua posição adequada
-    for pc in npc_list_1:
-        initiative_numbers[pc.initiative-1].append(pc)
+    for npc in npc_list_1:
+        initiative_numbers[npc.initiative-1].append(npc)
+        if npc.duble_turn:
+            initiative_numbers[npc.second_initiative-1].append(npc)
     #concatena todas as iniciativas em ordem decrecente
     for i in range(len(initiative_numbers)):
         initiative_list += initiative_numbers[len(initiative_numbers)-i-1]
@@ -90,7 +94,8 @@ def turn(creature, creature_list: list):
     for i in range(n_targets):
         target = str(input("Which creature would you like to target? " \
         "")).strip()
-        creature_list = life_edit(creature_list, target)
+        damage = get_integer('How much damage? ')
+        creature_list = life_edit(creature_list, target, damage)
     return creature_list
 
 #define 6 seconds of combat
@@ -116,7 +121,10 @@ def show_initiatives(npcs: list):
 
     print(f'{str1:^15}:{str2:^15}')
     for npc in npcs:
-        print(f"{npc.name:^15}:{npc.initiative:^15}")
+        if npc.duble_turn:
+            print(f"{npc.name:^15}:{npc.initiative:^6} e {npc.second_initiative:^6}")
+        else:
+            print(f"{npc.name:^15}:{npc.initiative:^15}")
 
 def main():
     print("'end' to finish the combat")
