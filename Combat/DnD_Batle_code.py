@@ -10,7 +10,7 @@ def npc_list():
     print_line(double= True)
     n = get_integer('Number of NPCs: ')
     for i in range(n):
-        npc_s.append(Npc(input("NPC's name: "), input("NPC's pv dices: "), get_integer(f"NPC's initiative modifier: ")))
+        npc_s.append(Npc(input("NPC's name: "), input("NPC's pv dices: "), get_integer("NPC's initiative modifier: "), get_integer("NPC's number of inititatives: ")))
     return npc_s
 
 #Import NPCs
@@ -19,10 +19,10 @@ def import_npc(path: str):
     names = df['name'].tolist()
     pv_dices = df['pv_dice'].tolist()
     initiative_modifiers = df['initiative_modifier'].tolist()
-    duble_turn = df['duble_turn'].tolist()
+    number_of_initiatives = df['number_of_initiatives'].tolist()
     npc_s = []
     for i in range(len(names)):
-        npc_s.append(Npc(names[i], str(pv_dices[i]), initiative_modifiers[i], duble_turn[i]))
+        npc_s.append(Npc(names[i], str(pv_dices[i]), initiative_modifiers[i], number_of_initiatives[i]))
     return npc_s
 
 #Manualy create PCs
@@ -52,12 +52,16 @@ def pc_roll(pcs):
 
 #NPCs must take damage!
 def life_edit(creature_list:list, target: str, damage: int):
+    pop_numbers = 0
     for item in creature_list:
         if item.name == target:
             item.take_damage(damage)
     for idx in range(len(creature_list)-1, -1, -1):
         if not creature_list[idx].alive:
             creature_list.pop(idx)
+            pop_numbers += 1
+    if pop_numbers != 0:
+        print(f'{target} has died!')
     return creature_list
 
 #organise by initiative
@@ -76,9 +80,8 @@ def organize_by_initiative(npc_list_1: list, pc_list_1: list):
         initiative_numbers[pc.initiative-1].append(pc)
     #designa cada npc à sua posição adequada
     for npc in npc_list_1:
-        initiative_numbers[npc.initiative-1].append(npc)
-        if npc.duble_turn:
-            initiative_numbers[npc.second_initiative-1].append(npc)
+        for i in npc.initiative:
+            initiative_numbers[i - 1].append(npc)
     #concatena todas as iniciativas em ordem decrecente
     for i in range(len(initiative_numbers)):
         initiative_list += initiative_numbers[len(initiative_numbers)-i-1]
@@ -121,10 +124,10 @@ def show_initiatives(npcs: list):
 
     print(f'{str1:^15}:{str2:^15}')
     for npc in npcs:
-        if npc.duble_turn:
-            print(f"{npc.name:^15}:{npc.initiative:^6} e {npc.second_initiative:^6}")
-        else:
-            print(f"{npc.name:^15}:{npc.initiative:^15}")
+        print(f"{npc.name:^15}: ",end='|')
+        for i in npc.initiative:
+            print(i, end='|')
+        print('')
 
 def main():
     print("'end' to finish the combat")

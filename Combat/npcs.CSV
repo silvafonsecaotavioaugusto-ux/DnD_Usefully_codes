@@ -1,5 +1,3 @@
-name,pv_dice,initiative_modifier,duble_turn,
-dem sens, 226,2,True,
-bart kum,105,2,False,
-sacerdote,45,0,False,
-veterano,90,1,False,
+name,pv_dice,initiative_modifier,number_of_initiatives,
+dem sens, 226,2,1,
+blob, 1000, 10, 2
