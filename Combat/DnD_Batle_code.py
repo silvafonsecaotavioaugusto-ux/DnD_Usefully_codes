@@ -25,9 +25,17 @@ def import_npc(path: str):
     initiative_modifiers = df['initiative_modifier'].tolist()
     number_of_initiatives = df['number_of_initiatives'].tolist()
     regenaration_rates = df['r_r'].tolist()
+    pdf_paths = df['pdf_path'].tolist()
+    pdf_pages = df['pdf_page'].tolist()
     npc_s = []
     for i in range(len(names)):
-        npc_s.append(Npc(names[i], str(pv_dices[i]), initiative_modifiers[i], number_of_initiatives[i], regenaration_rates[i]))
+        npc_s.append(Npc(names[i], 
+                    str(pv_dices[i]), 
+                    initiative_modifiers[i], 
+                    number_of_initiatives[i], 
+                    regenaration_rates[i],
+                    pdf_paths[i],
+                    pdf_pages[i]))
     return npc_s
 
 #Manualy create PCs
@@ -100,6 +108,7 @@ def turn(creature, creature_list: list):
         if creature.it_regen:
             creature.regen_pv()
         print(f"Actual HP:{creature.pv}.")
+        creature.show_npc_sheet()
     n_targets = get_integer(f"Number of targets: ")
     for i in range(n_targets):
         target = str(input("Which creature would you like to target? " \

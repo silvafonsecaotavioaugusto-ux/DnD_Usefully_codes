@@ -1,9 +1,19 @@
 import Roll_Dice as Rd
 from Error_t import get_integer
+import fitz  # PyMuPDF
+import matplotlib.pyplot as plt
+from PIL import Image
+
 
 #NPC creation
 class Npc:
-    def __init__(self, name: str = '', pv_dices: str = '', ini_modifier: int = 0, number_of_initiatives: int = 1, regeneration: int = 0):
+    def __init__(self, name: str = '', 
+                 pv_dices: str = '', 
+                 ini_modifier: int = 0, 
+                 number_of_initiatives: int = 1, 
+                 regeneration: int = 0, 
+                 pdf_path: str = "",
+                 pdf_page: int = 0):
         self.name = name
         self.is_npc = True
         self.pv_dices = pv_dices
@@ -14,6 +24,8 @@ class Npc:
         self.initiative = self.roll_initiative()
         self.it_regen = True if regeneration != 0 else False
         self.regeneration = regeneration
+        self.pdf_path = rf'{pdf_path}'
+        self.pdf_page = pdf_page
 
     def regen_pv(self):
         self.pv += self.regeneration
@@ -36,6 +48,22 @@ class Npc:
             else:
                 initiatives.append(initiative + self.ini_modifier)
         return initiatives
+
+    def show_npc_sheet(self):
+        try:
+            pdf = fitz.open(self.pdf_path)
+            pagina = pdf.load_page(self.pdf_page)
+            pix = pagina.get_pixmap()
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+
+            plt.figure()
+            plt.imshow(img)
+            plt.axis('off')
+            plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+            plt.show()
+        except:
+            pass
+
 
 #Player creation
 class Pc:
