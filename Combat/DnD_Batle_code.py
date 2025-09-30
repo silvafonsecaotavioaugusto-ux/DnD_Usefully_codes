@@ -10,7 +10,11 @@ def npc_list():
     print_line(double= True)
     n = get_integer('Number of NPCs: ')
     for i in range(n):
-        npc_s.append(Npc(input("NPC's name: "), input("NPC's pv dices: "), get_integer("NPC's initiative modifier: "), get_integer("NPC's number of inititatives: ")))
+        npc_s.append(Npc(input("NPC's name: "),
+                         input("NPC's pv dices: "),
+                         get_integer("NPC's initiative modifier: "),
+                         get_integer("NPC's number of inititatives: "),
+                         get_integer("Regeneration Rate: ")))
     return npc_s
 
 #Import NPCs
@@ -20,9 +24,10 @@ def import_npc(path: str):
     pv_dices = df['pv_dice'].tolist()
     initiative_modifiers = df['initiative_modifier'].tolist()
     number_of_initiatives = df['number_of_initiatives'].tolist()
+    regenaration_rates = df['r_r'].tolist()
     npc_s = []
     for i in range(len(names)):
-        npc_s.append(Npc(names[i], str(pv_dices[i]), initiative_modifiers[i], number_of_initiatives[i]))
+        npc_s.append(Npc(names[i], str(pv_dices[i]), initiative_modifiers[i], number_of_initiatives[i], regenaration_rates[i]))
     return npc_s
 
 #Manualy create PCs
@@ -92,6 +97,8 @@ def turn(creature, creature_list: list):
                 
     print(f"{creature.name}'s turn!")
     if creature.is_npc: #NPC's turn
+        if creature.it_regen:
+            creature.regen_pv()
         print(f"Actual HP:{creature.pv}.")
     n_targets = get_integer(f"Number of targets: ")
     for i in range(n_targets):
@@ -129,6 +136,17 @@ def show_initiatives(npcs: list):
             print(i, end='|')
         print('')
 
+def show_initiatives_and_pv(npcs: list):
+    print_line()
+    str1, str2, str3 = 'Name', 'Initiative', 'PV'
+
+    print(f'{str1:^15}:{str3:^10}:{str2:^15}')
+    for npc in npcs:
+        print(f"{npc.name:^15}:{npc.pv:^10}: ",end='|')
+        for i in npc.initiative:
+            print(i, end='|')
+        print('')
+
 def main():
     print("'end' to finish the combat")
     print("'add player' to add player")
@@ -158,7 +176,7 @@ Choose an option:
         npc = npc_list()
     elif op == 2:
         npc = import_npc("Combat\\npcs.CSV")
-    show_initiatives(npc)
+    show_initiatives_and_pv(npc)
     creature_list = organize_by_initiative(npc, player)
     n = 0
     while True:

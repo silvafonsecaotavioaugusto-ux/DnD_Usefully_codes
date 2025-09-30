@@ -3,7 +3,7 @@ from Error_t import get_integer
 
 #NPC creation
 class Npc:
-    def __init__(self, name: str = '', pv_dices: str = '', ini_modifier: int = 0, number_of_initiatives: int = 1):
+    def __init__(self, name: str = '', pv_dices: str = '', ini_modifier: int = 0, number_of_initiatives: int = 1, regeneration: int = 0):
         self.name = name
         self.is_npc = True
         self.pv_dices = pv_dices
@@ -12,9 +12,15 @@ class Npc:
         self.ini_modifier = ini_modifier
         self.number_of_initiatives = number_of_initiatives
         self.initiative = self.roll_initiative()
+        self.it_regen = True if regeneration != 0 else False
+        self.regeneration = regeneration
+
+    def regen_pv(self):
+        self.pv += self.regeneration
+        print(f'{self.name} regenerated {self.regeneration}PV')
 
 
-    def take_damage(self, damage):
+    def take_damage(self, damage: int):
         self.pv -= damage
         if self.pv < 0:
             self.alive = False
