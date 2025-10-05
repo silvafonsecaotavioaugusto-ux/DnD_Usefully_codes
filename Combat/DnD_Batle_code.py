@@ -69,10 +69,12 @@ def life_edit(creature_list:list, target: str, damage: int):
     for item in creature_list:
         if item.name == target:
             item.take_damage(damage)
+            break
     for idx in range(len(creature_list)-1, -1, -1):
-        if not creature_list[idx].alive:
-            creature_list.pop(idx)
-            pop_numbers += 1
+        if creature_list[idx].is_npc:
+            if not creature_list[idx].alive:
+                creature_list.pop(idx)
+                pop_numbers += 1
     if pop_numbers != 0:
         print(f'{target} has died!')
     return creature_list
