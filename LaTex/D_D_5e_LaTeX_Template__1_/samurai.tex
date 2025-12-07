@@ -1,0 +1,122 @@
+\documentclass[letterpaper,twocolumn,openany,nodeprecatedcode]{dndbook}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[singlelinecheck=false]{caption}
+\usepackage{lipsum}
+\usepackage{listings}
+\usepackage{shortvrb}
+\usepackage{eso-pic}
+\usepackage{tikzpagenodes}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{graphicx}
+
+\captionsetup[table]{labelformat=empty,font={sf,sc,bf,},skip=0pt}
+
+\MakeShortVerb{|}
+
+\lstset{%
+  basicstyle=\ttfamily,
+  language=[LaTeX]{TeX},
+  breaklines=true,
+}
+%Colocar imagem no fundo
+\newcommand{\TitleBackground}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node at (current page.center) {
+      \includegraphics[width=\paperwidth,height=\paperheight]{img/Samurai_img.jpeg}};
+  \end{tikzpicture}
+}
+
+\begin{document}
+
+\frontmatter
+
+\begin{titlepage}
+    %imagem de fundo
+    \TitleBackground
+    
+    %Título
+    \vspace*{1cm}
+    \begin{center}
+        {\Huge\bfseries The Samurai\par}
+        \vspace{0.5cm}
+        {\large Adapt to the flow of combat with this homebrew martial class\par}
+    \end{center}
+\end{titlepage}
+
+\clearpage
+\tableofcontents
+
+
+\mainmatter
+
+\section{The Samurai}
+
+\DndDropCapLine{S}{tanding alone beneath a barren ladscape, a human faces down a legion of Orc 
+    soldiers with a single blade in hand, his liege, a 10-year old princeling, 
+    quivering behind him.}
+\\ 
+Hidden in the shadows of a mansion's ceilling, an elevn spy watches a gathering
+of lords having a wat council, taking notes on their battle strategies.
+He keeps his set of bizarre equipment close to him, ready to scape at a moment's 
+notice.
+\\    
+Talismans in hand, a dragonborn priest summons spirit animals that hold down a 
+demon-possessed civilian. A blaze of fire suddenly silences de demon's cries, as 
+he finally draws out the creature that's been terrorizing the village.
+\\    
+Beholden by an oath no dissimilar to a knight, Samurai pledge their services to 
+a single individual, devoting their life to their cause. No matter the vast 
+diferrences in treir chosen lord, Samurai undergo a specialized training that 
+focus on a certain set of skills, skills that are sometimes as varied as the lord 
+they choose to serve. Whether skilled warriors who master the art of the blade, 
+subterfuge experts trained in gathering intel and assassination, or learned 
+arcanists who channel divine energy through esorteric implements, Samurai are 
+renowned and respected by their unering dedication to their craft.
+
+\subsection{A loyal Vassal}
+Samurai more often than not, enter into the service of a lord when they begin their 
+training. Perhabs they're apprenticed indo the lord of the land, or a family member 
+has taken them up for training, whichever the case, Samurai spend their early training 
+days working closely with their liege.
+\\
+\\
+\\
+Their oath is bound by honor. Thus, they perform their services until their death and 
+nothing would bring a Samurai greater shame than being dishonorably dismissed. Their 
+master's death is no reason for a Samurai's duty to ente either.
+Most Samurai pass on their services to their master's family, or to someone that their 
+ma+ster deems close. A few of them become lords themselves and even fewer settel down 
+and retire.
+\\
+\\
+\\
+\begin{DndComment}{Multiclassing}
+    You need a Strength and Dexterity of 13 to multiclas in and out of this class.
+
+
+    \textbf{Proficiencies}: Light armor, Simple Weapons, Martial Weapons, Calligrapher's Tools, Smith's Tools.
+\end{DndComment}
+
+\subsection{Distant Wanderers}
+In an event that a Samurai becomes without a lord, they might prefer to continue their 
+duties on their own, drifting from one place to another, only stopping at an area to 
+replenish their supplies or take a brief respite.
+
+These Samurai are referred to as \textbf{Ronin}, someone who finds the way without 
+belonging to one place. They can often be seen living and traveling amongst the commonfolk,
+assisting them in times of trouble and defending their vilages from bandits and raiders.
+
+These Samurai live a simpler life, but their hearts remain ready for the call of adventure.
+
+\begin{DndReadAloud}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\columnwidth]{img/Musashi_Myamoto.jpeg}
+    \end{figure}
+\end{DndReadAloud}
+\newpage
+\section{Samurai Weapons}
+
+\end{document}

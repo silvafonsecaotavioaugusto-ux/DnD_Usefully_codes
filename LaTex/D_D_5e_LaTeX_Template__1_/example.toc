@@ -1,0 +1,19 @@
+\babel@toc {english}{}\relax 
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}Sections}{1}{}%
+\contentsline {section}{Section}{1}{}%
+\contentsline {subsection}{Subsection}{1}{}%
+\contentsline {subsubsection}{Subsubsection}{1}{}%
+\contentsline {paragraph}{Paragraph}{1}{}%
+\contentsline {subparagraph}{Subparagraph}{1}{}%
+\contentsline {section}{Special Sections}{1}{}%
+\contentsline {subsection}{Typesetting Savant}{1}{}%
+\contentsline {subsubsection}{Foo's Quill}{1}{}%
+\contentsline {subsubsection}{Beautiful Typesetting}{1}{}%
+\contentsline {section}{Map Regions}{1}{}%
+\contentsline {chapter}{\numberline {2}Text Boxes}{2}{}%
+\contentsline {section}{As an Aside}{2}{}%
+\contentsline {section}{Tables}{2}{}%
+\contentsline {chapter}{\numberline {3}Monsters and NPCs}{3}{}%
+\contentsline {chapter}{\numberline {4}Colors}{5}{}%
+\contentsline {section}{Themed Colors}{5}{}%

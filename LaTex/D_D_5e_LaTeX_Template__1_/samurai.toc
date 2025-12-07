@@ -1,0 +1,6 @@
+\babel@toc {english}{}\relax 
+\babel@toc {english}{}\relax 
+\contentsline {section}{The Samurai}{1}{}%
+\contentsline {subsection}{A loyal Vassal}{1}{}%
+\contentsline {subsection}{Distant Wanderers}{1}{}%
+\contentsline {section}{Samurai Weapons}{2}{}%

@@ -1,6 +1,6 @@
 import Roll_Dice as Rd
 from Error_t import get_integer
-import fitz  # PyMuPDF
+#import fitz  # PyMuPDF
 import matplotlib.pyplot as plt
 from PIL import Image
 
@@ -17,7 +17,9 @@ class Npc:
         self.name = name
         self.is_npc = True
         self.pv_dices = pv_dices
-        self.pv = Rd.code_roll(self.pv_dices)
+        pv = Rd.code_roll(self.pv_dices)
+        self.max_pv = pv
+        self.pv = pv
         self.alive = True
         self.ini_modifier = ini_modifier
         self.number_of_initiatives = number_of_initiatives
@@ -28,8 +30,8 @@ class Npc:
         self.pdf_page = pdf_page
 
     def regen_pv(self):
-        self.pv += self.regeneration
-        print(f'{self.name} regenerated {self.regeneration}PV')
+        self.pv = min(self.pv + self.regeneration, self.max_pv)
+        print(f'{self.name} regenerated to {self.pv}PV')
 
 
     def take_damage(self, damage: int):
