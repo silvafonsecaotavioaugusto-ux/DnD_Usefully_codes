@@ -82,10 +82,6 @@ class Pc(Creature):
         self.initiative = 1
         self.pdf_path = pdf_path
 
-    def roll_for_initiative(self, mod: int = 0):
-        super().roll_for_initiative(n_rolls=1, mod=mod)
-
-
 # ---------------------- Utilitários ----------------------
 
 def code_roll(s: str) -> int:
@@ -125,21 +121,42 @@ def unique(_creatures: list)-> list:
         if not i in s_creatures:
             s_creatures.append(i)
     return s_creatures    
-            
+
+def search_bacround_path()-> str:
+    if getattr(sys, 'frozen', False):
+        base = os.path.dirname(sys.executable)
+        background_path = os.path.join(base,"..", "figures", "background.jpeg")
+    else:
+        base = os.path.dirname(os.path.abspath(__file__))
+        background_path = os.path.join(base, "figures", "background.jpeg")
+    
+    background_path = os.path.abspath(background_path)  # normaliza
+    return background_path
+
+def search_nopicture_path()-> str:
+    if getattr(sys, 'frozen', False):
+        base = os.path.dirname(sys.executable)
+        nopicture_path = os.path.join(base,"..", "figures", "nopicture.png")
+    else:
+        base = os.path.dirname(os.path.abspath(__file__))
+        nopicture_path = os.path.join(base, "figures", "nopicture.png")
+    
+    nopicture_path = os.path.abspath(nopicture_path)  # normaliza
+    return nopicture_path
 # ---------------------- GUI ----------------------
 
 class CombatWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Combat Manager - PyQt5')
-        self.resize(900, 600)
+        self.resize(1500, 600)
 
         # Imagem de Fundo
-        img_p = r"C:\Users\Otávio Augusto\OneDrive\Documentos\GitHub\DnD_Usefully_codes\Combat\Gui_combat\figures\background.jpeg"
+        img_p = search_bacround_path()
         o_fundo = QPixmap(img_p)
         palette = QPalette()
         palette.setBrush(QPalette.Window, QBrush(o_fundo))
-        self.setPalette(palette)
+        
 
         # estado
         self.pcs: List[Pc] = []
@@ -152,10 +169,13 @@ class CombatWindow(QtWidgets.QMainWindow):
             self.base_dir = os.path.dirname(sys.executable)
         else:
             self.base_dir = os.path.dirname(os.path.abspath(sys.argv[0])) + r'\dist'
+        self.nopicpath = search_nopicture_path()
 
         # widgets
         central = QtWidgets.QWidget()
         self.setCentralWidget(central)
+        central.setAutoFillBackground(True)
+        central.setPalette(palette)
         layout = QtWidgets.QVBoxLayout(central)
 
         # Top controls
@@ -188,10 +208,10 @@ class CombatWindow(QtWidgets.QMainWindow):
 
         self.list_widget = QtWidgets.QListWidget()
         self.list_widget.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-        middle.addWidget(self.list_widget, 2)
+        middle.addWidget(self.list_widget, 6)
 
         right_panel = QtWidgets.QVBoxLayout()
-        middle.addLayout(right_panel, 1)
+        middle.addLayout(right_panel, 4)
 
         self.sheet = QtWidgets.QLabel()
         size = QSize(300,400)
@@ -218,6 +238,15 @@ class CombatWindow(QtWidgets.QMainWindow):
         btn_end = QtWidgets.QPushButton('Encerrar combate')
         btn_end.clicked.connect(self.end_combat)
         right_panel.addWidget(btn_end)
+
+        # turn panel
+        self.turn_panel = QtWidgets.QFrame()
+        self.turn_panel.setStyleSheet("""
+    background: white;
+    border: 1px solid #888;
+""")
+        self.turn_layout = QtWidgets.QVBoxLayout(self.turn_panel)
+        middle.addWidget(self.turn_panel, 5)
 
         # status bar
         self.status = QtWidgets.QLabel('Pronto')
@@ -414,6 +443,7 @@ class CombatWindow(QtWidgets.QMainWindow):
         if not self.creature_list:
             QtWidgets.QMessageBox.information(self, 'Info', 'Nenhuma criatura na lista. Rolar iniciativas primeiro.')
             return
+
         # Regra: cada "turn" percorre a lista atual
         # aplicar regen no começo do turno para criatura
         cur_idx = self.turn_index % len(self.creature_list)
@@ -422,14 +452,25 @@ class CombatWindow(QtWidgets.QMainWindow):
             creature.regen_pv()
         # mostrar quem é o atual
         self.status.setText(f"Round {self.round_number} Turn {self.turn_index + 1} - {creature.name}'s turn")
-        # abrir diálogo para atacar/alvos
-        dlg = TurnDialog(self, creature, self.creature_list)
-        res = dlg.exec_()
+        
+        self.show_turn_widget(creature)
+
         # após ações, checar mortos e limpar
         self.cleanup_dead()
         self.round_number += (self.turn_index + 1) // max(1, len(self.creature_list))
         self.turn_index = (self.turn_index + 1) % max(1, len(self.creature_list))
         self.refresh_list()
+
+    def show_turn_widget(self, creature):
+        # apagar o conteúdo visual anterior
+        
+        self.clear_turn_panel()
+
+        # criar o novo widget do turno
+        tw = TurnWidget(creature, self.creature_list)
+        self.turn_layout.addWidget(tw)
+
+        self.current_turn_widget = tw
 
     def cleanup_dead(self):
         removed = 0
@@ -466,6 +507,33 @@ class CombatWindow(QtWidgets.QMainWindow):
             self.refresh_list()
             self.status.setText('Combate encerrado')
 
+    def _clear_layout(self, layout):
+        """Limpa recursivamente um layout: remove widgets e sublayouts."""
+        while layout.count():
+            item = layout.takeAt(0)
+            if item is None:
+                break
+            widget = item.widget()
+            if widget is not None:
+                # desconecta sinais opcionais aqui, se necessário
+                widget.setParent(None)
+                widget.deleteLater()
+            else:
+                # pode ser um sublayout
+                sublay = item.layout()
+                if sublay is not None:
+                    self._clear_layout(sublay)
+
+    def clear_turn_panel(self):
+        """Limpa todo o conteúdo do turn_layout de forma segura."""
+        if not hasattr(self, 'turn_layout'):
+            return
+
+        self._clear_layout(self.turn_layout)
+
+        # forçar atualização visual
+        self.turn_panel.update()
+        self.turn_panel.repaint()
 
 # ---------------------- Dialogs ----------------------
 class PcInitiativeDialog(QtWidgets.QDialog):
@@ -539,46 +607,70 @@ class AddNpcDialog(QtWidgets.QDialog):
         }
 
 
-class TurnDialog(QtWidgets.QDialog):
-    def __init__(self, parent, creature: Creature, creature_list: List[Creature]):
+# ---------------------- Turn Widget ----------------------
+class ImageLabel(QtWidgets.QLabel):
+    def __init__(self, path, parent=None, max_width: int = 440):
         super().__init__(parent)
-        self.setWindowTitle(f"{creature.name}'s Turn")
+        self.setAlignment(QtCore.Qt.AlignCenter)
+        self.setStyleSheet("border: 2px solid #888;")
+        self.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Preferred
+        )
+        self.setMaximumWidth(max_width)
+        self.setMaximumHeight(max_width)
+
+        self.pixmap_original = QtGui.QPixmap(path)
+
+    def resizeEvent(self, event):
+        if not self.pixmap_original.isNull():
+            self.setPixmap(
+                self.pixmap_original.scaled(
+                    self.size(),
+                    QtCore.Qt.KeepAspectRatio,
+                    QtCore.Qt.SmoothTransformation
+                )
+            )
+        super().resizeEvent(event)
+
+class TurnWidget(QtWidgets.QWidget):
+
+    def __init__(self, creature: Creature, creature_list: List[Creature], parent =None):
+        super().__init__(parent)
         self.creature = creature
         self.creature_list = creature_list
-        self.resize(400, 300)
 
-        layout = QtWidgets.QHBoxLayout(self)
-        text_layout = QtWidgets.QVBoxLayout()
-        label = QtWidgets.QLabel(f"É a vez de {creature.name}. PV atual: {creature.pv}/{creature.max_pv}")
-        text_layout.addWidget(label)
+        turn_layout = QtWidgets.QVBoxLayout(self)
 
+        path = str(creature.pdf_path)
+        if path in ['', 'nan', 'None']:
+            path = search_nopicture_path()
+        img = ImageLabel(path=path)
+        turn_layout.addWidget(img)
+
+
+        label = QtWidgets.QLabel(f"É a vez de {creature.name}!")
+        turn_layout.addWidget(label)
+
+
+        damage_box = QtWidgets.QHBoxLayout(self)
+        self.damage_spin = QtWidgets.QSpinBox()
+        self.damage_spin.setRange(0, 9999)
         self.targets_combo = QtWidgets.QComboBox()
         for c in creature_list:
             if c is not creature and c.alive:
                 self.targets_combo.addItem(f"{c.name} ({'NPC' if c.is_npc else 'PC'})", userData=c)
-        text_layout.addWidget(self.targets_combo)
 
-        self.damage_spin = QtWidgets.QSpinBox()
-        self.damage_spin.setRange(0, 9999)
-        text_layout.addWidget(QtWidgets.QLabel('Dano a aplicar:'))
-        text_layout.addWidget(self.damage_spin)
+        damage_box.addWidget(QtWidgets.QLabel('Dano a aplicar:'),2)
+        damage_box.addWidget(self.damage_spin, 1)
+        damage_box.addWidget(self.targets_combo, 7)
+        turn_layout.addLayout(damage_box)
+
 
         btn_attack = QtWidgets.QPushButton('Aplicar dano')
         btn_attack.clicked.connect(self.apply_damage)
-        text_layout.addWidget(btn_attack)
-
-        close_btn = QtWidgets.QPushButton('Fechar')
-        close_btn.clicked.connect(self.accept)
-        text_layout.addWidget(close_btn)
-        
-        layout.addLayout(text_layout)
-        
-        path = str(creature.pdf_path)
-        if not path in ['', 'nan', 'None']:
-            img = QtWidgets.QLabel()
-            img.setPixmap(QtGui.QPixmap(path).scaledToWidth(250))
-            img.setStyleSheet("border: 2px solid #888;")
-            layout.addWidget(img)
+        turn_layout.addWidget(btn_attack)
+    
 
     def apply_damage(self):
         idx = self.targets_combo.currentIndex()
@@ -592,7 +684,6 @@ class TurnDialog(QtWidgets.QDialog):
         # se morreu, remover da combobox
         if not target.alive:
             self.targets_combo.removeItem(idx)
-
 
 # ---------------------- Main ----------------------
 
