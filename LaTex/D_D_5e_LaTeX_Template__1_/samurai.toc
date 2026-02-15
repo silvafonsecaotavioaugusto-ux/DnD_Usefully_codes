@@ -4,3 +4,25 @@
 \contentsline {subsection}{A loyal Vassal}{1}{}%
 \contentsline {subsection}{Distant Wanderers}{1}{}%
 \contentsline {section}{Samurai Weapons}{2}{}%
+\contentsline {section}{Samurai}{3}{}%
+\contentsline {subsection}{Class Features}{4}{}%
+\contentsline {subsubsection}{Hit Points}{4}{}%
+\contentsline {subsubsection}{Proficiencies}{4}{}%
+\contentsline {subsubsection}{Equipment}{4}{}%
+\contentsline {subsubsection}{Stance}{4}{}%
+\contentsline {paragraph}{Heaven}{4}{}%
+\contentsline {paragraph}{Earth}{4}{}%
+\contentsline {paragraph}{Man}{4}{}%
+\contentsline {subsubsection}{First Step}{4}{}%
+\contentsline {subsubsection}{Weapon Mastery}{4}{}%
+\contentsline {subsubsection}{Elegant Courtier}{5}{}%
+\contentsline {subsubsection}{Fighting Style}{5}{}%
+\contentsline {subsubsection}{Samurai Discipline}{5}{}%
+\contentsline {subsubsection}{Ability Score Improvement}{5}{}%
+\contentsline {subsubsection}{Martial Versatility}{5}{}%
+\contentsline {subsection}{Extra Attack}{5}{}%
+\contentsline {subsection}{Precise Strike}{5}{}%
+\contentsline {subsubsection}{Ascended Stance}{5}{}%
+\contentsline {paragraph}{Heaven Kai:}{5}{}%
+\contentsline {paragraph}{Earth Kai:}{5}{}%
+\contentsline {paragraph}{Man Kai:}{5}{}%
